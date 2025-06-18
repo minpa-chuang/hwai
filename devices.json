@@ -1,0 +1,4 @@
+[
+  {"floor": "1F", "ip": "192.168.1.10", "location": "Server Room"},
+  {"floor": "2F", "ip": "192.168.1.20", "location": "Office"}
+]
