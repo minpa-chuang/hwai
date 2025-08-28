@@ -14,30 +14,68 @@ foreach ($devices as $dev) {
 <meta charset="UTF-8">
 <title>Network Monitor</title>
 <style>
-body { font-family: Arial, sans-serif; }
-.floor { margin-bottom: 20px; }
-.status { display: inline-block; width: 12px; height: 12px; border-radius: 50%; }
-.status.up { background: #0f0; }
-.status.down { background: #f00; }
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+}
+h1 {
+  text-align: center;
+}
+.floor {
+  margin-bottom: 30px;
+}
+.floor-title {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+.device-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+.device-card {
+  background: #fff;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+}
+.status {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+.status.up { background: #4caf50; }
+.status.down { background: #f44336; }
 .status.unknown { background: #ccc; }
+.device-info {
+  display: flex;
+  flex-direction: column;
+}
 </style>
 </head>
 <body>
 <h1>Network Device Status</h1>
-<p>Last updated: <?php echo htmlspecialchars($timestamp); ?></p>
+<p style="text-align:center;">Last updated: <?= htmlspecialchars($timestamp) ?></p>
 <?php foreach ($byFloor as $floor => $list): ?>
 <div class="floor">
-  <h2>Floor <?php echo htmlspecialchars($floor); ?></h2>
-  <table border="1" cellpadding="5" cellspacing="0">
-    <tr><th>IP</th><th>Location</th><th>Status</th></tr>
+  <div class="floor-title">Floor <?= htmlspecialchars($floor) ?></div>
+  <div class="device-grid">
     <?php foreach ($list as $device): ?>
-    <tr>
-      <td><?php echo htmlspecialchars($device['ip']); ?></td>
-      <td><?php echo htmlspecialchars($device['location']); ?></td>
-      <td><span class="status <?php echo htmlspecialchars($device['status']); ?>"></span> <?php echo htmlspecialchars($device['status']); ?></td>
-    </tr>
+    <div class="device-card">
+      <span class="status <?= htmlspecialchars($device['status']) ?>"></span>
+      <div class="device-info">
+        <div><?= htmlspecialchars($device['ip']) ?></div>
+        <div><?= htmlspecialchars($device['location']) ?></div>
+      </div>
+    </div>
     <?php endforeach; ?>
-  </table>
+  </div>
 </div>
 <?php endforeach; ?>
 </body>
