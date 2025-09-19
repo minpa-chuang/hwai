@@ -1,0 +1,6 @@
+beautifulsoup4
+requests
+schedule
+openai
+google-generativeai
+yfinance
