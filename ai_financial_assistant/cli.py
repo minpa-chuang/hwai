@@ -4,7 +4,7 @@ from __future__ import annotations
 import argparse
 import logging
 from pathlib import Path
-from typing import Sequence
+from typing import List, Sequence
 
 from .config import AppConfig, load_config
 from .pipeline import run_pipeline
@@ -29,6 +29,12 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         help="Disable OpenAI-powered analysis for this run.",
     )
     parser.add_argument(
+        "--ticker",
+        action="append",
+        dest="tickers",
+        help="Only analyze specified ticker(s); can be used multiple times.",
+    )
+    parser.add_argument(
         "--schedule",
         action="store_true",
         help="Run continuously according to the schedule defined in the configuration.",
@@ -45,6 +51,18 @@ def main(argv: Sequence[str] | None = None) -> None:
         config.openai.enabled = False
     if args.output_dir:
         config.report.output_dir = args.output_dir
+    if args.tickers:
+        requested: List[str] = []
+        seen = set()
+        for ticker in args.tickers:
+            if ticker not in config.company_map:
+                raise SystemExit(
+                    f"Ticker {ticker} is not defined in the configuration's company mapping."
+                )
+            if ticker not in seen:
+                requested.append(ticker)
+                seen.add(ticker)
+        config.tickers = requested
 
     output_path = Path(config.report.output_dir)
     if args.schedule or config.schedule.enabled:

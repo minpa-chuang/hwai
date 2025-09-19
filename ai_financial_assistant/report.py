@@ -5,9 +5,10 @@ import datetime as dt
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from .analysis import SentimentResult
+from .history import HistoryRecord
 from .stock_data import StockQuote
 
 LOGGER = logging.getLogger(__name__)
@@ -91,6 +92,116 @@ class DailyReport:
         return "\n".join(lines)
 
 
+@dataclass(slots=True)
+class OverviewTickerSnapshot:
+    """Summary data used to build the portfolio overview."""
+
+    ticker: str
+    company_name: str
+    quote: StockQuote
+    history: List[HistoryRecord]
+    latest_sentiment: Optional[SentimentResult] = None
+    report_path: Optional[Path] = None
+
+
+_PROVIDER_DISPLAY_NAMES = {
+    "openai": "ChatGPT (OpenAI)",
+    "gemini": "Gemini (Google)",
+    "perplexity": "Perplexity AI",
+}
+
+
+@dataclass(slots=True)
+class PortfolioOverview:
+    """Aggregated view of all tracked tickers for the day."""
+
+    as_of: dt.date
+    snapshots: List[OverviewTickerSnapshot]
+    consultations: Dict[str, str]
+
+    def to_markdown(self) -> str:
+        lines: List[str] = [
+            "=" * 60,
+            f"**投資組合概覽 - {self.as_of.isoformat()}**",
+            "=" * 60,
+            "",
+        ]
+
+        if not self.snapshots:
+            lines.append("目前沒有任何已追蹤的標的。")
+            return "\n".join(lines)
+
+        lines.extend(
+            [
+                "## 監控總覽",
+                "",
+                "| 股票 | 收盤價 | 漲跌幅 | 最新情緒 | 每日報告 |",
+                "| --- | --- | --- | --- | --- |",
+            ]
+        )
+
+        for snapshot in self.snapshots:
+            change_percent = snapshot.quote.change_percent * 100
+            if snapshot.latest_sentiment:
+                sentiment_text = (
+                    f"{snapshot.latest_sentiment.label}（{snapshot.latest_sentiment.reason}）"
+                )
+            else:
+                sentiment_text = "尚無資料"
+            sentiment_text = sentiment_text.replace("\n", "<br>").replace("|", "\\|")
+            report_link = "-"
+            if snapshot.report_path:
+                report_link = f"[連結]({snapshot.report_path.name})"
+
+            lines.append(
+                "| {company} ({ticker}) | ${price:,.2f} | {change:+.2f}% | {sentiment} | {link} |".format(
+                    company=snapshot.company_name,
+                    ticker=snapshot.ticker,
+                    price=snapshot.quote.price,
+                    change=change_percent,
+                    sentiment=sentiment_text,
+                    link=report_link,
+                )
+            )
+
+        lines.extend(["", "## 個股趨勢", ""])
+
+        for snapshot in self.snapshots:
+            lines.append(f"### {snapshot.company_name} ({snapshot.ticker})")
+            if snapshot.history:
+                recent = snapshot.history[-5:]
+                trend = "、".join(
+                    f"{record.date.strftime('%m/%d')}：${record.close:,.2f} ({record.change_percent * 100:+.2f}%)"
+                    for record in recent
+                )
+                lines.append(f"- 近期走勢：{trend}")
+            else:
+                lines.append("- 近期走勢：尚無歷史資料。")
+
+            if snapshot.latest_sentiment:
+                lines.append(
+                    f"- 最新情緒：{snapshot.latest_sentiment.label}（{snapshot.latest_sentiment.reason}）"
+                )
+            else:
+                lines.append("- 最新情緒：尚無情緒分析資料。")
+
+            if snapshot.report_path:
+                lines.append(f"- 詳細報告：[每日戰情]({snapshot.report_path.name})")
+
+            lines.append("")
+
+        if self.consultations:
+            lines.extend(["## AI 專業諮詢", ""])
+            for provider in sorted(self.consultations):
+                content = self.consultations[provider]
+                display_name = _PROVIDER_DISPLAY_NAMES.get(provider, provider.title())
+                lines.append(f"### {display_name}")
+                lines.append(content.strip())
+                lines.append("")
+
+        return "\n".join(lines)
+
+
 def save_report(report: DailyReport, output_dir: Path) -> Path:
     """Write the report to a Markdown file and return the path."""
 
@@ -103,4 +214,23 @@ def save_report(report: DailyReport, output_dir: Path) -> Path:
     return path
 
 
-__all__ = ["DailyReport", "ReportNewsEntry", "save_report"]
+def save_overview_report(overview: PortfolioOverview, output_dir: Path) -> Path:
+    """Persist the portfolio overview report and return the resulting path."""
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    filename = f"overview_{overview.as_of.isoformat()}.md"
+    path = output_dir / filename
+    with path.open("w", encoding="utf-8") as handle:
+        handle.write(overview.to_markdown())
+    LOGGER.info("Overview report written to %s", path)
+    return path
+
+
+__all__ = [
+    "DailyReport",
+    "OverviewTickerSnapshot",
+    "PortfolioOverview",
+    "ReportNewsEntry",
+    "save_overview_report",
+    "save_report",
+]

@@ -34,6 +34,58 @@ class OpenAIConfig:
 
 
 @dataclass(slots=True)
+class GeminiConfig:
+    """Configuration for Google Gemini-powered analysis."""
+
+    model: str = "gemini-1.5-pro"
+    temperature: float = 0.2
+    enabled: bool = False
+    max_retries: int = 3
+
+
+@dataclass(slots=True)
+class PerplexityConfig:
+    """Configuration for Perplexity API analysis."""
+
+    model: str = "sonar-small-chat"
+    temperature: float = 0.2
+    enabled: bool = False
+    max_retries: int = 3
+
+
+@dataclass(slots=True)
+class AIProvidersConfig:
+    """Collection of AI provider configurations."""
+
+    primary: str = "openai"
+    openai: OpenAIConfig = field(default_factory=OpenAIConfig)
+    gemini: GeminiConfig = field(default_factory=GeminiConfig)
+    perplexity: PerplexityConfig = field(default_factory=PerplexityConfig)
+
+    def normalized_primary(self) -> str:
+        """Return the normalized provider name for the configured primary provider."""
+
+        return self.primary.lower()
+
+    def is_enabled(self, provider: str) -> bool:
+        provider = provider.lower()
+        if provider == "openai":
+            return self.openai.enabled
+        if provider == "gemini":
+            return self.gemini.enabled
+        if provider == "perplexity":
+            return self.perplexity.enabled
+        return False
+
+    def enabled_providers(self) -> List[str]:
+        return [
+            name
+            for name in ("openai", "gemini", "perplexity")
+            if self.is_enabled(name)
+        ]
+
+
+@dataclass(slots=True)
 class ReportConfig:
     """Controls how reports are generated and stored."""
 
@@ -58,7 +110,7 @@ class AppConfig:
     tickers: List[str]
     company_map: Dict[str, str]
     news: NewsConfig = field(default_factory=NewsConfig)
-    openai: OpenAIConfig = field(default_factory=OpenAIConfig)
+    ai: AIProvidersConfig = field(default_factory=AIProvidersConfig)
     report: ReportConfig = field(default_factory=ReportConfig)
     schedule: ScheduleConfig = field(default_factory=ScheduleConfig)
 
@@ -74,10 +126,21 @@ class AppConfig:
                 "Missing company name mapping for tickers: " + ", ".join(missing_names)
             )
 
+        if self.ai.normalized_primary() not in {"openai", "gemini", "perplexity"}:
+            raise ValueError(
+                f"Unsupported primary AI provider configured: {self.ai.primary}"
+            )
+
     def company_for(self, ticker: str) -> str:
         """Return the human-readable company name for a ticker."""
 
         return self.company_map[ticker]
+
+    @property
+    def openai(self) -> OpenAIConfig:
+        """Provide backwards-compatible access to the OpenAI configuration."""
+
+        return self.ai.openai
 
 
 def _load_json(path: Path) -> Dict[str, object]:
@@ -113,11 +176,20 @@ def load_config(path: Optional[os.PathLike[str] | str] = None) -> AppConfig:
     tickers = list(raw.get("tickers", []))
     company_map = dict(raw.get("company_map", {}))
 
+    ai_raw = dict(raw.get("ai", {}))
+    if "openai" not in ai_raw and "openai" in raw:
+        ai_raw["openai"] = dict(raw.get("openai", {}))
+
     config = AppConfig(
         tickers=tickers,
         company_map=company_map,
         news=NewsConfig(**(raw.get("news", {}))),
-        openai=OpenAIConfig(**(raw.get("openai", {}))),
+        ai=AIProvidersConfig(
+            primary=ai_raw.get("primary", "openai"),
+            openai=OpenAIConfig(**(ai_raw.get("openai", {}))),
+            gemini=GeminiConfig(**(ai_raw.get("gemini", {}))),
+            perplexity=PerplexityConfig(**(ai_raw.get("perplexity", {}))),
+        ),
         report=ReportConfig(**(raw.get("report", {}))),
         schedule=ScheduleConfig(**(raw.get("schedule", {}))),
     )
@@ -130,6 +202,9 @@ __all__ = [
     "AppConfig",
     "NewsConfig",
     "OpenAIConfig",
+    "GeminiConfig",
+    "PerplexityConfig",
+    "AIProvidersConfig",
     "ReportConfig",
     "ScheduleConfig",
     "load_config",

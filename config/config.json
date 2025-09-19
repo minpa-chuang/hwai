@@ -1,7 +1,8 @@
 {
-  "tickers": ["2330.TW"],
+  "tickers": ["2330.TW", "2454.TW"],
   "company_map": {
-    "2330.TW": "台積電"
+    "2330.TW": "台積電",
+    "2454.TW": "聯發科"
   },
   "news": {
     "per_company": 3,
@@ -10,11 +11,26 @@
     "max_retries": 3,
     "request_timeout": 10
   },
-  "openai": {
-    "model": "gpt-4o-mini",
-    "temperature": 0.2,
-    "enabled": true,
-    "max_retries": 3
+  "ai": {
+    "primary": "openai",
+    "openai": {
+      "model": "gpt-4o-mini",
+      "temperature": 0.2,
+      "enabled": true,
+      "max_retries": 3
+    },
+    "gemini": {
+      "model": "gemini-1.5-pro",
+      "temperature": 0.2,
+      "enabled": false,
+      "max_retries": 3
+    },
+    "perplexity": {
+      "model": "sonar-small-chat",
+      "temperature": 0.2,
+      "enabled": false,
+      "max_retries": 3
+    }
   },
   "report": {
     "output_dir": "reports",
