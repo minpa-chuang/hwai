@@ -1,0 +1,29 @@
+{
+  "tickers": ["2330.TW"],
+  "company_map": {
+    "2330.TW": "台積電"
+  },
+  "news": {
+    "per_company": 3,
+    "language": "zh-TW",
+    "region": "TW",
+    "max_retries": 3,
+    "request_timeout": 10
+  },
+  "openai": {
+    "model": "gpt-4o-mini",
+    "temperature": 0.2,
+    "enabled": true,
+    "max_retries": 3
+  },
+  "report": {
+    "output_dir": "reports",
+    "template": "text",
+    "include_ai_commentary": true
+  },
+  "schedule": {
+    "enabled": false,
+    "time": "15:00",
+    "timezone": "Asia/Taipei"
+  }
+}
