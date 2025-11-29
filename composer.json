@@ -1,0 +1,20 @@
+{
+    "name": "hwai/maintenance-journal",
+    "description": "工作日誌與維修管理系統 - PHP + MariaDB 初始專案結構",
+    "type": "project",
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Hwai\\": "backend/src/"
+        }
+    },
+    "scripts": {
+        "serve": "php -S 0.0.0.0:8000 -t backend/public backend/public/index.php",
+        "test": "vendor/bin/phpunit"
+    }
+}
