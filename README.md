@@ -137,6 +137,45 @@ frontend/
 - 離線打卡與補傳機制。
 - 報表匯出與薪資系統對接。
 
+### 可運行環境規劃 (Nginx + PHP + MariaDB)
+
+為確保打卡系統可在標準 LEMP 環境運行，以下提供基礎部署規劃與建議設定：
+
+#### 基礎服務
+
+- **Nginx**：反向代理與靜態檔案服務。
+- **PHP-FPM**：執行後端 PHP 應用程式。
+- **MariaDB**：保存帳號、裝置與打卡紀錄等資料。
+
+#### Nginx 配置要點
+
+- 將 `backend/public` 設為網站根目錄。
+- 所有 API 請求導向 `index.php` (前置控制器)。
+- 強制 HTTPS 並設定安全標頭 (HSTS、X-Content-Type-Options 等)。
+- 限制上傳大小與連線逾時。
+
+#### PHP-FPM 配置要點
+
+- 建議 PHP 8.1+。
+- 設定 `memory_limit`、`max_execution_time`、`post_max_size` 等。
+- 啟用 OPcache 以提升效能。
+- 依照環境配置 `.env` 與資料庫連線參數。
+
+#### MariaDB 配置要點
+
+- 建議 MariaDB 10.6+。
+- 設定 InnoDB 為預設引擎。
+- 開啟慢查詢記錄以便優化。
+- 定期備份與設定資料保留期限 (尤其 GPS 資訊)。
+
+#### 部署流程 (概略)
+
+1. 建置 Nginx、PHP-FPM、MariaDB。
+2. 匯入 `database/schema.sql` 建表。
+3. 佈署程式碼並設定 `.env`。
+4. 設定 Nginx 虛擬主機與 PHP-FPM 連線。
+5. 使用 HTTPS 憑證與排程備份。
+
 ## 授權
 
 尚未指定授權條款，後續可依組織需求補充。
