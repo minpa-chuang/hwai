@@ -46,7 +46,11 @@ class Application
 
         $value = $this->bindings[$key];
         if ($value instanceof \Closure) {
-            $value = $value($this);
+            $reflection = new \ReflectionFunction($value);
+
+            $value = $reflection->getNumberOfParameters() > 0
+                ? $value($this)
+                : $value();
         }
 
         $this->instances[$key] = $value;
