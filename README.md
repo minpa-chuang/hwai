@@ -60,6 +60,10 @@ frontend/
 - 整合郵件服務、快取機制與安全強化需求。
 - 撰寫自動化測試與 API 文件 (OpenAPI)。
 
+## 安全與身分驗證架構補充
+
+- 已新增 `docs/sso-ad-security-architecture.md`，說明以 Windows Active Directory（主站/備援）為核心，搭配 PHP、MariaDB、Nginx 的單一入口認證設計與 OWASP Top 10 對應控制。
+
 ## 授權
 
 尚未指定授權條款，後續可依組織需求補充。
