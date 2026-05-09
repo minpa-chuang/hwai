@@ -1,0 +1,109 @@
+{
+  "project": "中華醫事科技大學 cinematic vertical promo",
+  "format": {
+    "duration_seconds": 30,
+    "aspect_ratio": "9:16",
+    "resolution": "1080x1920",
+    "style_stack": [
+      "Netflix documentary intro",
+      "Korean youth drama aesthetics",
+      "TikTok viral editing rhythm",
+      "Apple commercial polish",
+      "future medical technology atmosphere"
+    ]
+  },
+  "global_direction": {
+    "pacing": "Fast-paced retention edit with a visible change every 1 second.",
+    "typography": "Large Traditional Chinese kinetic typography, bold modern Taiwanese youth style, white outlined subtitles.",
+    "effects": [
+      "glitch transitions",
+      "particle effects",
+      "lens flare",
+      "light streaks",
+      "cinematic motion blur",
+      "volumetric lighting",
+      "floating particles"
+    ],
+    "camera": [
+      "drone shot",
+      "slow motion",
+      "orbit camera",
+      "speed ramping",
+      "extreme close-up",
+      "handheld realism",
+      "cinematic zoom"
+    ],
+    "audio": "Epic emotional cinematic hybrid trailer music with bass drops, whoosh transitions, and uplifting climax.",
+    "color_grade": "Netflix cinematic contrast, Korean soft glow, warm sunset tones, high contrast highlights."
+  },
+  "timeline": [
+    {
+      "time": "00:00-00:02",
+      "title": "Opening hook",
+      "visual": "Massive cinematic text over dark futuristic medical light bloom.",
+      "text": "你的未來，\n不該只是想像。",
+      "motion": "Bass impact, type punch-in, RGB glitch tear, hard whoosh transition."
+    },
+    {
+      "time": "00:02-00:06",
+      "title": "Modern campus sunrise",
+      "visual": "Sunlight shines across a modern university campus while students walk in slow motion; drone flies through campus corridors.",
+      "text": "陽光穿越校園，夢想開始加速",
+      "motion": "Drone push-through, speed ramp, warm lens flare."
+    },
+    {
+      "time": "00:06-00:10",
+      "title": "Nursing emergency rescue",
+      "visual": "Nursing students practice emergency rescue training; focused eyes in extreme close-up; medical equipment glows cinematically.",
+      "text": "專注雙眼，救護現場的每一秒",
+      "motion": "Handheld realism, cut-ins on hands and eyes, heartbeat bass pulse."
+    },
+    {
+      "time": "00:10-00:14",
+      "title": "AI smart healthcare lab",
+      "visual": "AI smart healthcare laboratory with holographic medical HUD floating in air and futuristic healthcare technology.",
+      "text": "醫療 × AI × 未來",
+      "motion": "HUD parallax, particle scan, neon cyan reveal."
+    },
+    {
+      "time": "00:14-00:17",
+      "title": "Optometry department",
+      "visual": "Optometry students operate advanced instruments in ultra-clean white lab aesthetics with Korean commercial lighting.",
+      "text": "高階儀器，白色實驗室美學",
+      "motion": "Clean dolly move, white flash cut, precision macro close-up."
+    },
+    {
+      "time": "00:17-00:20",
+      "title": "Campus youth freedom",
+      "visual": "Students laugh in cafeteria; basketball court at sunset; youthful freedom and university energy.",
+      "text": "不只是讀書",
+      "motion": "Golden-hour handheld, jump cuts, ball bounce speed ramp."
+    },
+    {
+      "time": "00:20-00:23",
+      "title": "High-tech close-up montage",
+      "visual": "Lab coats, medical uniforms, high-tech devices, and students using AI systems.",
+      "text": "而是改變人生",
+      "motion": "Macro detail flashes, UI overlays, light streak transitions."
+    },
+    {
+      "time": "00:23-00:26",
+      "title": "Future career montage",
+      "visual": "Graduation, hospital internship, professional certification, and future career success.",
+      "text": "畢業・實習・證照・未來職涯",
+      "motion": "Fast montage, rising orchestral impact, certification shine."
+    },
+    {
+      "time": "00:26-00:30",
+      "title": "Rooftop finale and logo reveal",
+      "visual": "Students stand together on rooftop at sunset; orbit camera, lens flare, wind blowing, golden sunset logo reveal.",
+      "text": "中華醫事科技大學\n下一個主角，就是你",
+      "motion": "Orbit camera, wind-swept silhouettes, emotional climax, cinematic fade out."
+    }
+  ],
+  "delivery_notes": [
+    "Use the companion HTML file as a browser-preview animatic and timing reference.",
+    "Replace abstract placeholders with licensed campus footage, student releases, department-specific footage, and official university logo before publication.",
+    "Keep all Traditional Chinese text readable on mobile by preserving high contrast outlines and safe-area margins."
+  ]
+}
